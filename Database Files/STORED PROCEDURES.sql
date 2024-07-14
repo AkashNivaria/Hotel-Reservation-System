@@ -1,0 +1,153 @@
+--Stored Procedure for checking room availability between certain dates
+
+ALTER PROCEDURE AVAILABILITY_CHECK
+@RID INT,
+@STARTDATE DATE,
+@ENDDATE DATE
+AS 
+BEGIN
+	SELECT COUNT(*)
+	FROM RESERVATION 
+	WHERE ROOMID=@RID
+	AND @STARTDATE<ENDDATE AND @ENDDATE>STARTDATE
+END;
+
+
+--Stored Procedure to add new rooms into the database
+
+ALTER PROCEDURE REGISTERROOM
+@HOTELNAME NVARCHAR(50),
+@ROOMNUMBER NVARCHAR(20),
+@ROOMTYPE NVARCHAR(20),
+@PRICE DECIMAL
+AS
+BEGIN
+    DECLARE @HOTELID INT;
+
+    -- Check if the HOTELNAME already exists in the HOTELS table
+    IF NOT EXISTS (SELECT 1 FROM HOTELS WHERE HOTELNAME = @HOTELNAME)
+    BEGIN
+        -- Insert into HOTELS table if HOTELNAME does not exist
+        INSERT INTO HOTELS (HOTELNAME)
+        VALUES (@HOTELNAME);
+
+        -- Get the newly inserted HOTELID
+        SELECT @HOTELID = SCOPE_IDENTITY();
+    END
+    ELSE
+    BEGIN
+        -- Get the existing HOTELID
+        SELECT @HOTELID = HOTELID FROM HOTELS WHERE HOTELNAME = @HOTELNAME;
+    END
+
+    -- Insert into ROOMS table
+    INSERT INTO ROOMS (HOTELID, ROOMNUMBER, ROOMTYPE,PRICE)
+    VALUES (@HOTELID, @ROOMNUMBER, @ROOMTYPE,@PRICE);
+END;
+
+
+
+
+--Stored Procedure for Generating a Bill of a User
+
+ALTER PROCEDURE GENERATEBILL
+@USERID INT
+AS
+BEGIN 
+	SELECT SUM(PRICE*DATEDIFF(DAY,STARTDATE,ENDDATE)) AS TOTAL
+	FROM USERS 
+	INNER JOIN RESERVATION ON USERS.USERNAME=RESERVATION.USERNAME
+	INNER JOIN ROOMS ON RESERVATION.ROOMID=ROOMS.ROOMID
+	WHERE USERID=@USERID
+END;
+
+
+--Stored Procedure for Login
+
+ALTER PROCEDURE UserLogin
+@Username NVARCHAR(50),
+@Password NVARCHAR(256)
+AS
+BEGIN
+    IF EXISTS (SELECT USERID FROM USERS WHERE USERNAME = @Username AND PASSWORD = @Password)
+    BEGIN
+        SELECT 0 
+    END
+    ELSE
+    BEGIN
+        SELECT 1 
+    END
+END;
+
+
+--Stored Procedure for adding new users
+
+CREATE PROCEDURE ADDUSER
+@USERNAME NVARCHAR(20),
+@PASSWORD NVARCHAR(250)
+AS
+BEGIN
+	INSERT INTO USERS (USERNAME,PASSWORD)
+	VALUES(@USERNAME,@PASSWORD)
+END;
+
+
+
+--Stored Procedure for Check-IN
+ALTER PROCEDURE CheckIn
+@ReservationID INT,
+@CheckInDate DATE
+AS
+BEGIN
+    -- Check if the ReservationID exists
+    IF NOT EXISTS (SELECT 1 FROM RESERVATION WHERE RESERVATIONID = @ReservationID)
+    BEGIN
+        -- ReservationID does not exist
+        RAISERROR('Reservation ID does not exist.', 16, 1);
+        RETURN;
+    END
+
+    -- Update the CheckInDate if ReservationID exists
+    UPDATE RESERVATION
+    SET CHECKINDATE = @CheckInDate
+    WHERE RESERVATIONID = @ReservationID;
+END;
+
+
+
+--Stored Procedure for Check-OUT
+
+ALTER PROCEDURE CheckOut
+@ReservationID INT,
+@CheckOutDate DATE
+AS
+BEGIN
+    -- Check if the ReservationID exists
+    IF NOT EXISTS (SELECT 1 FROM RESERVATION WHERE RESERVATIONID = @ReservationID)
+    BEGIN
+        -- ReservationID does not exist
+        RAISERROR('Reservation ID does not exist.', 16, 1);
+        RETURN;
+    END
+
+    -- Update the CheckInDate if ReservationID exists
+    UPDATE RESERVATION
+    SET CHECKOUTDATE = @CheckOutDate
+    WHERE RESERVATIONID = @ReservationID;
+END;
+
+select * from RESERVATION
+
+--Stored Procedure for making a reservation
+
+ALTER PROCEDURE MAKE_RESERVATION
+@ROOMID INT,
+@USERNAME NVARCHAR(30),
+@STARTDATE DATE,
+@ENDDATE DATE
+AS 
+BEGIN
+        INSERT INTO RESERVATION(ROOMID, USERNAME, STARTDATE, ENDDATE)
+        VALUES(@ROOMID, @USERNAME, @STARTDATE, @ENDDATE);
+    
+END;
