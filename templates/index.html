@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="index">
+        <br><br>
+        <h1>Welcome to <br> Hospitality Management System</h1>
+        <br><br>
+        <h2 class="Options">Select an option</h2>
+        <br>
+        <a href="{{ url_for('login') }}" class="btn">Login</a>
+        <a href="{{ url_for('register') }}" class="btn">Register</a>
+        <br><br><br>
+    </div>
+</body>
+</html>
