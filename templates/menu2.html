@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Menu</h1>
+    <ul>
+        <li><a href="#check_availability">Check Room Availability</a></li>
+        <li><a href="#make_reservation">Make Reservation</a></li>
+        <li><a href="#generate_bill">Generate Bill</a></li>
+        <li><a href="#register_room">Register a Room (Admin Only)</a></li>
+        <li><a href="#check_in">Check In</a></li>
+        <li><a href="#check_out">Check Out</a></li>
+        <li><a href="{{ url_for('home') }}">Exit</a></li>
+    </ul>
+
+    <div id="check_availability">
+        <h2>Check Room Availability</h2>
+        <form method="POST" action="{{ url_for('check_availability') }}">
+            <label for="room_id">Room ID:</label>
+            <input type="text" id="room_id" name="room_id" required>
+            <br>
+            <label for="start_date">Start Date (YYYY-MM-DD):</label>
+            <input type="text" id="start_date" name="start_date" required>
+            <br>
+            <label for="end_date">End Date (YYYY-MM-DD):</label>
+            <input type="text" id="end_date" name="end_date" required>
+            <br>
+            <button type="submit">Check Availability</button>
+        </form>
+    </div>
+
+    <div id="make_reservation">
+        <h2>Make Reservation</h2>
+        <form method="POST" action="{{ url_for('make_reservation_route') }}">
+            <label for="room_id">Room ID:</label>
+            <input type="text" id="room_id" name="room_id" required>
+            <br>
+            <label for="start_date">Start Date (YYYY-MM-DD):</label>
+            <input type="text" id="start_date" name="start_date" required>
+            <br>
+            <label for="end_date">End Date (YYYY-MM-DD):</label>
+            <input type="text" id="end_date" name="end_date" required>
+            <br>
+            <button type="submit">Make Reservation</button>
+        </form>
+    </div>
+
+    <div id="generate_bill">
+        <h2>Generate Bill</h2>
+        <form method="POST" action="{{ url_for('generate_bill_route') }}">
+            <label for="user_id">User ID:</label>
+            <input type="text" id="user_id" name="user_id" required>
+            <br>
+            <button type="submit">Generate Bill</button>
+        </form>
+    </div>
+
+    <div id="register_room">
+        <h2>Register a Room</h2>
+        <form method="POST" action="{{ url_for('register_room_route') }}">
+            <label for="admin_username">Admin Username:</label>
+            <input type="text" id="admin_username" name="admin_username" required>
+            <br>
+            <label for="admin_password">Admin Password:</label>
+            <input type="password" id="admin_password" name="admin_password" required>
+            <br>
+            <label for="hotel_name">Hotel Name:</label>
+            <input type="text" id="hotel_name" name="hotel_name" required>
+            <br>
+            <label for="room_number">Room Number:</label>
+            <input type="text" id="room_number" name="room_number" required>
+            <br>
+            <label for="room_type">Room Type:</label>
+            <input type="text" id="room_type" name="room_type" required>
+            <br>
+            <label for="price">Price Per Day:</label>
+            <input type="text" id="price" name="price" required>
+            <br>
+            <button type="submit">Register Room</button>
+        </form>
+    </div>
+
+    <div id="check_in">
+        <h2>Check In</h2>
+        <form method="POST" action="{{ url_for('check_in_route') }}">
+            <label for="reservation_id">Reservation ID:</label>
+            <input type="text" id="reservation_id" name="reservation_id" required>
+            <br>
+            <label for="check_in_date">Check In Date (YYYY-MM-DD):</label>
+            <input type="text" id="check_in_date" name="check_in_date" required>
+            <br>
+            <button type="submit">Check In</button>
+        </form>
+    </div>
+
+    <div id="check_out">
+        <h2>Check Out</h2>
+        <form method="POST" action="{{ url_for('check_out_route') }}">
+            <label for="reservation_id">Reservation ID:</label>
+            <input type="text" id="reservation_id" name="reservation_id" required>
+            <br>
+            <label for="check_out_date">Check Out Date (YYYY-MM-DD):</label>
+            <input type="text" id="check_out_date" name="check_out_date" required>
+            <br>
+            <button type="submit">Check Out</button>
+        </form>
+    </div>
+
+    <div class="m">
+        {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
+    </div>
+    
+</body>
+</html>
